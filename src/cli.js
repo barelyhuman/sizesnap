@@ -36,7 +36,7 @@ const readConfig = () => {
   return JSON.parse(pkgData);
 };
 
-function run() {
+async function run() {
   try {
     const pkg = readConfig();
 
@@ -48,7 +48,7 @@ function run() {
     if (!filePaths.length) {
       info(`No Files to size`);
     }
-    const filesToSize = findFiles(filePaths);
+    const filesToSize = await findFiles(filePaths);
     const snapshot = {};
     filesToSize.forEach((file) => {
       info(`Sizing ${file}`);
@@ -73,9 +73,9 @@ function writeSnapshot(snapshot = {}) {
   });
 }
 
-function main() {
+async function main() {
   info("Reading Config");
-  run();
+  await run();
   success(`Generated ${SNAPSHOT_FILE}`);
 }
 
