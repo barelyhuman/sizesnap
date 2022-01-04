@@ -1,6 +1,6 @@
 {
   "name": "sizesnap",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "author": "Reaper <ahoy@barelyhuman.dev>",
   "bin": {
