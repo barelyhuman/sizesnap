@@ -1,18 +1,7 @@
 {
   "name": "sizesnap",
+  "description": "Simple file size snapshot generator",
   "version": "0.0.1",
-  "license": "MIT",
-  "author": "Reaper <ahoy@barelyhuman.dev>",
-  "bin": {
-    "sizesnap": "./cli.js"
-  },
-  "files": [
-    "cli.js",
-    "lib/*"
-  ],
-  "engines": {
-    "node": ">=12"
-  },
   "keywords": [
     "cli",
     "bundle",
@@ -20,16 +9,29 @@
     "file size",
     "limit file size"
   ],
-  "sizesnap": {
-    "files": [
-      "./*.js",
-      "./lib/*.js"
-    ]
+  "license": "MIT",
+  "author": "Reaper <ahoy@barelyhuman.dev>",
+  "main": "index.js",
+  "bin": {
+    "sizesnap": "./cli.js"
   },
+  "files": [
+    "cli.js",
+    "lib/*"
+  ],
   "dependencies": {
     "brotli-size": "^4.0.0",
     "bytes": "^3.1.1",
     "globule": "^1.3.3",
     "picocolors": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "sizesnap": {
+    "files": [
+      "./*.js",
+      "./lib/*.js"
+    ]
   }
 }
