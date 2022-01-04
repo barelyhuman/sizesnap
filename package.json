@@ -1,0 +1,35 @@
+{
+  "name": "sizesnap",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Reaper <ahoy@barelyhuman.dev>",
+  "bin": {
+    "sizesnap": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "lib/*"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "keywords": [
+    "cli",
+    "bundle",
+    "size",
+    "file size",
+    "limit file size"
+  ],
+  "sizesnap": {
+    "files": [
+      "./*.js",
+      "./lib/*.js"
+    ]
+  },
+  "dependencies": {
+    "brotli-size": "^4.0.0",
+    "bytes": "^3.1.1",
+    "globule": "^1.3.3",
+    "picocolors": "^1.0.0"
+  }
+}
