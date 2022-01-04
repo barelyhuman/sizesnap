@@ -1,7 +1,7 @@
 {
   "name": "sizesnap",
-  "description": "Simple file size snapshot generator",
   "version": "0.0.1",
+  "description": "Simple file size snapshot generator",
   "keywords": [
     "cli",
     "bundle",
@@ -13,16 +13,21 @@
   "author": "Reaper <ahoy@barelyhuman.dev>",
   "main": "index.js",
   "bin": {
-    "sizesnap": "./cli.js"
-  },
-  "scripts": {
-    "size": "./cli.js"
+    "sizesnap": "./dist/index.js"
   },
   "files": [
-    "cli.js",
-    "lib/*"
+    "dist/*"
   ],
-  "dependencies": {
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "ncc build -m src/cli.js -o dist",
+    "postbuild": " chmod +x dist/index.js",
+    "dev": "npm run build -- -w",
+    "prepublishOnly": "npm run build",
+    "size": "./dist/index.js"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.33.1",
     "brotli-size": "^4.0.0",
     "bytes": "^3.1.1",
     "globule": "^1.3.3",
@@ -33,8 +38,7 @@
   },
   "sizesnap": {
     "files": [
-      "./*.js",
-      "./lib/*.js"
+      "./dist/*.js"
     ]
   }
 }

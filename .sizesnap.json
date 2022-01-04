@@ -1,17 +1,7 @@
 {
-  "./cli.js": {
-    "size": "1.62KB",
-    "brotli": "657B",
-    "gzip": "731B"
-  },
-  "./lib/files.js": {
-    "size": "164B",
-    "brotli": "100B",
-    "gzip": "130B"
-  },
-  "./lib/zipped.js": {
-    "size": "444B",
-    "brotli": "186B",
-    "gzip": "207B"
+  "./dist/index.js": {
+    "size": "134.85KB",
+    "brotli": "36.78KB",
+    "gzip": "41.62KB"
   }
 }

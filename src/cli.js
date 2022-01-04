@@ -28,10 +28,17 @@ const danger = (msg) => {
 
 const pretty = (size) => bytes(size);
 
+const readConfig = () => {
+  const pkgData =
+    (fs.existsSync("package.json") &&
+      fs.readFileSync(path.join(process.cwd(), "package.json")).toString()) ||
+    "{}";
+  return JSON.parse(pkgData);
+};
+
 function run() {
   try {
-    const pkgfile = path.resolve("package.json");
-    const pkg = fs.existsSync(pkgfile) && require(pkgfile);
+    const pkg = readConfig();
 
     if (!pkg.sizesnap) {
       throw new Error("couldn't find `sizesnap` config in package.json");

@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@vercel/ncc@^0.33.1":
+  version "0.33.1"
+  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.33.1.tgz#b240080a3c1ded9446a30955a06a79851bb38f71"
+  integrity sha512-Mlsps/P0PLZwsCFtSol23FGqT3FhBGb4B1AuGQ52JTAtXhak+b0Fh/4T55r0/SVQPeRiX9pNItOEHwakGPmZYA==
+
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
