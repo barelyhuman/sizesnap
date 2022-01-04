@@ -2,6 +2,10 @@
 
 > Simple file size snapshot generator
 
+- Tiny (15.3kB) , alternatives go up to 1MB
+- Single File (thanks to [@vercel/ncc](https://github.com/@vercel/ncc))
+- I don't have more points...
+
 ## Install
 
 ```sh
