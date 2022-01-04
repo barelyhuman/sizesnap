@@ -1,6 +1,6 @@
 {
   "name": "sizesnap",
-  "version": "0.0.2",
+  "version": "0.0.3-0",
   "description": "Simple file size snapshot generator",
   "keywords": [
     "cli",
