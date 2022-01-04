@@ -15,6 +15,9 @@
   "bin": {
     "sizesnap": "./cli.js"
   },
+  "scripts": {
+    "size": "./cli.js"
+  },
   "files": [
     "cli.js",
     "lib/*"
