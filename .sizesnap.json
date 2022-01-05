@@ -1,7 +1,42 @@
 {
   "dist/index.js": {
-    "size": "12.11KB",
-    "brotli": "4.27KB",
-    "gzip": "4.74KB"
+    "size": "13.14KB",
+    "brotli": "4.61KB",
+    "gzip": "5.09KB"
+  },
+  "src/api.js": {
+    "size": "2.78KB",
+    "brotli": "851B",
+    "gzip": "952B"
+  },
+  "src/constants.js": {
+    "size": "80B",
+    "brotli": "73B",
+    "gzip": "75B"
+  },
+  "src/index.js": {
+    "size": "385B",
+    "brotli": "208B",
+    "gzip": "246B"
+  },
+  "src/lib/bytes.js": {
+    "size": "72B",
+    "brotli": "76B",
+    "gzip": "79B"
+  },
+  "src/lib/files.js": {
+    "size": "372B",
+    "brotli": "186B",
+    "gzip": "223B"
+  },
+  "src/lib/loggers.js": {
+    "size": "351B",
+    "brotli": "181B",
+    "gzip": "212B"
+  },
+  "src/lib/zipped.js": {
+    "size": "444B",
+    "brotli": "186B",
+    "gzip": "207B"
   }
 }

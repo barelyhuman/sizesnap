@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "author": "Reaper <ahoy@barelyhuman.dev>",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "bin": {
     "sizesnap": "./dist/index.js"
   },
@@ -20,8 +20,8 @@
   ],
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "ncc build -m src/cli.js -o dist",
-    "postbuild": " chmod +x dist/index.js",
+    "build": "ncc build -m src/index.js",
+    "postbuild": "chmod +x dist/index.js",
     "dev": "npm run build -- -w",
     "prepublishOnly": "npm run build",
     "size": "./dist/index.js"
@@ -38,7 +38,8 @@
   },
   "sizesnap": {
     "files": [
-      "./dist/*.js"
+      "./dist/*.js",
+      "./src/**/*.js"
     ]
   }
 }
