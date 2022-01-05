@@ -16,7 +16,7 @@ const _promiseStates = {
 const padder = " ";
 const tableHeader = (m) => pc.bold(pc.dim(pc.underline(m)));
 const tableData = (m, italic) => pc.white(italic ? pc.italic(m) : m);
-const rpad = (str, max) => str + padder.repeat(max - str.length);
+const rpad = (str, max) => str + padder.repeat(Math.max(max - str.length, 0));
 
 function SizeSnap() {
   const that = this;

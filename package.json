@@ -23,6 +23,7 @@
     "build": "ncc build -m src/index.js",
     "postbuild": "chmod +x dist/index.js",
     "dev": "npm run build -- -w",
+    "test": "uvu -i fixtures",
     "prepublishOnly": "npm run build",
     "size": "./dist/index.js pretty"
   },
@@ -31,7 +32,8 @@
     "brotli-size": "^4.0.0",
     "bytes": "^3.1.1",
     "picocolors": "^1.0.0",
-    "tiny-glob": "^0.2.9"
+    "tiny-glob": "^0.2.9",
+    "uvu": "^0.5.3"
   },
   "engines": {
     "node": ">=12"
