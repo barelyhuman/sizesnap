@@ -6,13 +6,20 @@ const { info, success } = require("./lib/loggers");
 
 info("Reading Config");
 
-new SizeSnap()
-  .onDone(() => {
-    success(`Generated ${SNAPSHOT_FILE}`);
-  })
-  .generateSnapshot({ log: true })
-  .writeSnapshot()
+const sizeSnap = new SizeSnap()
   .readConfig()
-  .sizeFiles();
+  .sizeFiles()
+  .generateSnapshot({ log: true })
+  .writeSnapshot();
+
+const args = process.argv.slice(2);
+
+if (args.indexOf("pretty") > -1) {
+  sizeSnap.prettyPrint();
+}
+
+sizeSnap.onDone(() => {
+  success(`Generated ${SNAPSHOT_FILE}`);
+});
 
 exports.SizeSnap = SizeSnap;

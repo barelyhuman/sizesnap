@@ -24,7 +24,7 @@
     "postbuild": "chmod +x dist/index.js",
     "dev": "npm run build -- -w",
     "prepublishOnly": "npm run build",
-    "size": "./dist/index.js"
+    "size": "./dist/index.js pretty"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.1",
