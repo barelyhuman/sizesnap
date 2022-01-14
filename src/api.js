@@ -14,8 +14,9 @@ const _promiseStates = {
 };
 
 const padder = " ";
-const tableHeader = (m) => pc.bold(pc.dim(pc.underline(m)));
-const tableData = (m, italic) => pc.white(italic ? pc.italic(m) : m);
+const tableHeader = (m) => pc.bold(pc.dim(m));
+const tableData = (m, italic, color) =>
+  pc[color || "white"](italic ? pc.italic(m) : m);
 const rpad = (str, max) => str + padder.repeat(Math.max(max - str.length, 0));
 
 function SizeSnap() {
@@ -33,7 +34,7 @@ function SizeSnap() {
   that.toJSON = toJSON;
   that.writeSnapshot = writeSnapshot;
   that.onDone = onDone;
-  that.prettyPrint = prettyPrint;
+  that.tablePrint = tablePrint;
 
   function readConfig(path = "package.json") {
     const pkgData =
@@ -89,8 +90,9 @@ function SizeSnap() {
   function _generateSnapshot({ log = false } = {}) {
     const snapshot = {};
     (that.filePaths || []).forEach((file) => {
-      !that.shouldPrettyPrint && log && info(`Sizing ${file}`);
       const buf = readFileSync(file);
+      log &&
+        info(`Sizing ${file} - ${pc.yellow(pretty(Buffer.byteLength(buf)))}`);
       snapshot[file] = {
         size: pretty(Buffer.byteLength(buf)),
         brotli: pretty(brotli(buf)),
@@ -111,7 +113,7 @@ function SizeSnap() {
     });
   }
 
-  function prettyPrint() {
+  function tablePrint() {
     that.shouldPrettyPrint = true;
     waitForSnapshot(() => {
       let fileNameSize = 0;
@@ -137,20 +139,20 @@ function SizeSnap() {
       let print = "";
 
       const headers = [
-        tableHeader(rpad("filepath", fileNameSize)),
-        tableHeader(rpad("size", originalSize)),
-        tableHeader(rpad("gzip", gzipSize)),
-        tableHeader(rpad("brotli", brotliSize)),
+        tableHeader(rpad("filepath".toUpperCase(), fileNameSize)),
+        tableHeader(rpad("size".toUpperCase(), originalSize)),
+        tableHeader(rpad("gzip".toUpperCase(), gzipSize)),
+        tableHeader(rpad("brotli".toUpperCase(), brotliSize)),
       ];
 
       print += `${headers.join("\t")}\n`;
 
       items.forEach((item) => {
         const tData = [
-          tableData(rpad(item.path, fileNameSize)),
-          tableData(rpad(item.size, originalSize), true),
-          tableData(rpad(item.gzip, gzipSize), true),
-          tableData(rpad(item.brotli, brotliSize), true),
+          tableData(rpad(item.path, fileNameSize), true),
+          tableData(rpad(item.size, originalSize), false, "yellow"),
+          tableData(rpad(item.gzip, gzipSize), false, "yellow"),
+          tableData(rpad(item.brotli, brotliSize), false, "yellow"),
         ];
         print += `${tData.join("\t")}\n`;
       });

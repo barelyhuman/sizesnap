@@ -10,9 +10,9 @@ exports.success = (msg) => {
 };
 
 exports.info = (msg) => {
-  console.log(pc.white("==>"), pc.cyan(msg));
+  console.log(pc.yellow(">>"), pc.bold(pc.white(msg)));
 };
 
 exports.danger = (msg) => {
-  console.error(pc.red(`<==>${msg}`));
+  console.error(pc.red(`${msg}`));
 };
