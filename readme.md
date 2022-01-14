@@ -61,6 +61,10 @@ src/lib/zipped.js       444B    207B    186B
 
 ```
 
+## API
+
+The package features a builder style API, you can get a fair understanding of using it from [src/index.js](src/index.js) file
+
 ## License
 
 [MIT](/LICENSE)

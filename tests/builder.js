@@ -1,6 +1,6 @@
 const { test } = require("uvu");
 const assert = require("uvu/assert");
-const SizeSnap = require("../dist");
+const { SizeSnap } = require("../dist");
 const { readFileSync } = require("fs");
 const { join } = require("path");
 const { spawnSync } = require("child_process");
