@@ -24,7 +24,7 @@
     "postbuild": "chmod +x dist/index.js",
     "dev": "npm run build -- -w",
     "prepublishOnly": "npm run build",
-    "size": "./dist/index.js pretty",
+    "size": "./dist/index.js",
     "test": "uvu -i fixtures"
   },
   "devDependencies": {
