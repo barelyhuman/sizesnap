@@ -33,32 +33,30 @@ Add the following in your `package.json`, `files` is an `[]` of file glob paths
 ```sh
 > yarn size
 # output
-==> Reading Config
-==> Sizing dist/index.js
-==> Sizing src/api.js
-==> Sizing src/constants.js
-==> Sizing src/index.js
-==> Sizing src/lib/bytes.js
-==> Sizing src/lib/files.js
-==> Sizing src/lib/loggers.js
-==> Sizing src/lib/zipped.js
+>> Reading Config
+>> Sizing dist/index.js - 14.72KB
+>> Sizing src/api.js - 4.71KB
+>> Sizing src/constants.js - 80B
+>> Sizing src/index.js - 762B
+>> Sizing src/lib/bytes.js - 72B
+>> Sizing src/lib/files.js - 372B
+>> Sizing src/lib/loggers.js - 357B
+>> Sizing src/lib/zipped.js - 444B
 -x- Generated .sizesnap.json
-Generated .sizesnap.json
 
 # or
 
-> yarn size pretty
+> yarn size table
 
 # output
-filepath                size    gzip    brotli
--------------------     ------- ------  ------
-dist/index.js           14.16KB 5.45KB  4.94KB
-src/api.js              4.54KB  1.41KB  1.27KB
+FILEPATH                SIZE    GZIP    BROTLI
+dist/index.js           14.74KB 5.6KB   5.08KB
+src/api.js              4.71KB  1.46KB  1.32KB
 src/constants.js        80B     75B     73B
-src/index.js            507B    305B    260B
+src/index.js            801B    402B    340B
 src/lib/bytes.js        72B     79B     76B
 src/lib/files.js        372B    223B    186B
-src/lib/loggers.js      351B    212B    181B
+src/lib/loggers.js      357B    216B    186B
 src/lib/zipped.js       444B    207B    186B
 
 ```

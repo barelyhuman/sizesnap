@@ -4,28 +4,35 @@ const { SizeSnap } = require("./api");
 const { SNAPSHOT_FILE } = require("./constants");
 const { info, success } = require("./lib/loggers");
 
-function run() {
+function generate({ log = true, table = false, write = true } = {}) {
   info("Reading Config");
 
-  const sizeSnap = new SizeSnap()
-    .readConfig()
-    .sizeFiles()
-    .generateSnapshot({ log: true })
-    .writeSnapshot();
+  const sizeSnap = new SizeSnap().readConfig().sizeFiles();
 
   const args = process.argv.slice(2);
 
-  if (args.indexOf("pretty") > -1) {
-    sizeSnap.prettyPrint();
+  if (args.indexOf("table") > -1) {
+    log = false;
+    table = true;
   }
 
-  sizeSnap.onDone(() => {
-    success(`Generated ${SNAPSHOT_FILE}`);
-  });
+  sizeSnap.generateSnapshot({ log });
+
+  if (table) {
+    sizeSnap.tablePrint();
+  }
+
+  if (write) {
+    sizeSnap.writeSnapshot();
+    sizeSnap.onDone(() => {
+      success(`Generated ${SNAPSHOT_FILE}`);
+    });
+  }
 }
 
-module.exports = SizeSnap;
+exports.SizeSnap = SizeSnap;
+exports.generate = generate;
 
 if (require.main === module) {
-  run();
+  generate();
 }
