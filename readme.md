@@ -2,9 +2,10 @@
 
 > Simple file size snapshot generator
 
-- Tiny (15.3kB) , alternatives go up to 1MB
+- Tiny (15.3kB, 5.45kB gzip, 4.94kB brotli) , alternatives go up to 1MB
 - Single File (thanks to [@vercel/ncc](https://github.com/@vercel/ncc))
 - I don't have more points...
+- Pretty Printer
 
 ## Install
 
@@ -30,13 +31,34 @@ Add the following in your `package.json`, `files` is an `[]` of file glob paths
 ```
 
 ```sh
-yarn size
+> yarn size
 # output
-==> Reading Config
-==> Sizing ./cli.js
-==> Sizing ./lib/files.js
-==> Sizing ./lib/zipped.js
-Generated .sizesnap.json
+>> Reading Config
+>> Sizing dist/index.js - 14.72KB
+>> Sizing src/api.js - 4.71KB
+>> Sizing src/constants.js - 80B
+>> Sizing src/index.js - 762B
+>> Sizing src/lib/bytes.js - 72B
+>> Sizing src/lib/files.js - 372B
+>> Sizing src/lib/loggers.js - 357B
+>> Sizing src/lib/zipped.js - 444B
+-x- Generated .sizesnap.json
+
+# or
+
+> yarn size table
+
+# output
+FILEPATH                SIZE    GZIP    BROTLI
+dist/index.js           14.74KB 5.6KB   5.08KB
+src/api.js              4.71KB  1.46KB  1.32KB
+src/constants.js        80B     75B     73B
+src/index.js            801B    402B    340B
+src/lib/bytes.js        72B     79B     76B
+src/lib/files.js        372B    223B    186B
+src/lib/loggers.js      357B    216B    186B
+src/lib/zipped.js       444B    207B    186B
+
 ```
 
 ## License

@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "author": "Reaper <ahoy@barelyhuman.dev>",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "bin": {
     "sizesnap": "./dist/index.js"
   },
@@ -20,25 +20,28 @@
   ],
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "ncc build -m src/cli.js -o dist",
-    "postbuild": " chmod +x dist/index.js",
+    "build": "ncc build -m src/index.js",
+    "postbuild": "chmod +x dist/index.js",
     "dev": "npm run build -- -w",
+    "test": "uvu -i fixtures",
     "prepublishOnly": "npm run build",
-    "size": "./dist/index.js"
+    "size": "./dist/index.js pretty"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.1",
     "brotli-size": "^4.0.0",
     "bytes": "^3.1.1",
     "picocolors": "^1.0.0",
-    "tiny-glob": "^0.2.9"
+    "tiny-glob": "^0.2.9",
+    "uvu": "^0.5.3"
   },
   "engines": {
     "node": ">=12"
   },
   "sizesnap": {
     "files": [
-      "./dist/*.js"
+      "./dist/*.js",
+      "./src/**/*.js"
     ]
   }
 }
