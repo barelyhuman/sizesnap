@@ -7,6 +7,10 @@
 - I don't have more points...
 - Pretty Printer
 
+## Web version
+
+There's also a webversion, which serves the purpose of quickly checking a package's contents and their sizes. You can visit it as [https://sizesnap.reaper.im](https://sizesnap.reaper.im)
+
 ## Install
 
 ```sh
