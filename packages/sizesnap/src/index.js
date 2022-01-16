@@ -2,7 +2,7 @@
 
 const { SizeSnap } = require("./api");
 const { SNAPSHOT_FILE } = require("./constants");
-const { info, success } = require("./lib/loggers");
+const { info, success } = require("../../../lib/loggers");
 
 function generate({ log = true, table = false, write = true } = {}) {
   info("Reading Config");

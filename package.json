@@ -1,47 +1,29 @@
 {
-  "name": "sizesnap",
-  "version": "0.1.0",
-  "description": "Simple file size snapshot generator",
-  "keywords": [
-    "cli",
-    "bundle",
-    "size",
-    "file size",
-    "limit file size"
+  "name": "sizesnap-packages",
+  "workspaces": [
+    "packages/*"
   ],
-  "license": "MIT",
-  "author": "Reaper <ahoy@barelyhuman.dev>",
-  "main": "./dist/index.js",
-  "bin": {
-    "sizesnap": "./dist/index.js"
-  },
-  "files": [
-    "dist/*"
-  ],
-  "scripts": {
-    "prebuild": "rm -rf dist",
-    "build": "ncc build -m src/index.js",
-    "postbuild": "chmod +x dist/index.js",
-    "dev": "npm run build -- -w",
-    "prepublishOnly": "npm run build",
-    "size": "./dist/index.js",
-    "test": "uvu -i fixtures"
-  },
-  "devDependencies": {
-    "@vercel/ncc": "^0.33.1",
-    "brotli-size": "^4.0.0",
-    "bytes": "^3.1.1",
-    "picocolors": "^1.0.0",
-    "tiny-glob": "^0.2.9",
-    "uvu": "^0.5.3"
-  },
   "engines": {
-    "node": ">=12"
+    "node": ">=12",
+    "pnpm": ">=3"
+  },
+  "private": "true",
+  "scripts": {
+    "server:dev": "pnpm run dev --filter server",
+    "build": "pnpm run build -r"
   },
   "sizesnap": {
     "files": [
-      "./dist/*.js",
-      "./src/**/*.js"
+      "./packages/sizesnap/dist/*.js"
     ]
+  },
+  "dependencies": {
+    "brotli-size": "^4.0.0",
+    "bytes": "^3.1.1",
+    "got": "^12.0.1",
+    "picocolors": "^1.0.0",
+    "tar": "^6.1.11",
+    "tiny-glob": "^0.2.9",
+    "zlib": "^1.0.5"
   }
 }

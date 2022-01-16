@@ -1,9 +1,9 @@
-const { findFiles } = require("./lib/files");
+const { findFiles } = require("../../../lib/files");
 const { readFileSync, existsSync, writeFile } = require("fs");
 const { join } = require("path");
-const { info } = require("./lib/loggers");
-const { pretty } = require("./lib/bytes");
-const { brotli, gzip } = require("./lib/zipped");
+const { info } = require("../../../lib/loggers");
+const { pretty } = require("../../../lib/bytes");
+const { brotli, gzip } = require("../../../lib/zipped");
 const { SNAPSHOT_FILE } = require("./constants");
 const pc = require("picocolors");
 
