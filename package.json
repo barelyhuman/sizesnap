@@ -12,11 +12,6 @@
     "server:dev": "pnpm run dev --filter server",
     "build": "pnpm run build -r"
   },
-  "sizesnap": {
-    "files": [
-      "./packages/sizesnap/dist/*.js"
-    ]
-  },
   "dependencies": {
     "brotli-size": "^4.0.0",
     "bytes": "^3.1.1",

@@ -35,6 +35,11 @@
     "tiny-glob": "^0.2.9",
     "uvu": "^0.5.3"
   },
+  "sizesnap": {
+    "files": [
+      "./dist/*.js"
+    ]
+  },
   "engines": {
     "node": ">=12"
   },
