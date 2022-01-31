@@ -1,6 +1,6 @@
 {
   "name": "sizesnap-lite",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "simple fize size utility",
   "keywords": [
     "cli",
@@ -14,6 +14,9 @@
   "main": "dist/index.js",
   "bin": {
     "sizesnap-lite": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist"
