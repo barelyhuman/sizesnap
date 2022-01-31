@@ -1,0 +1,33 @@
+{
+  "name": "sizesnap-lite",
+  "version": "0.0.0",
+  "description": "simple fize size utility",
+  "keywords": [
+    "cli",
+    "bundle",
+    "size",
+    "file size",
+    "limit file size"
+  ],
+  "license": "MIT",
+  "author": "Reaper <ahoy@barelyhuman.dev>",
+  "main": "dist/index.js",
+  "bin": {
+    "sizesnap-lite": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "wrap -m -i index.js",
+    "fix": "wrap -f"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.12",
+    "@barelyhuman/wrap": "^1.0.4",
+    "@rollup/plugin-babel": "^5.3.0",
+    "rollup": "^2.66.1",
+    "rollup-plugin-node-externals": "^3.1.2",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}
