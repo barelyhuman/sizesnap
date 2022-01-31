@@ -22,7 +22,7 @@ const prettyBytes = (bytes) => {
   return bytes > 1000 ? bytes / 1000 + "kB" : bytes + "B";
 };
 
-async function main() {
+async function cli() {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     throw new Error("Provide a file for sizesnap to size");
@@ -32,11 +32,17 @@ async function main() {
     throw new Error("Invalid args, only one argument accepted");
   }
 
-  const file = resolve(args[0]);
+  lite(resolve(args[0]));
+}
+
+async function lite(file) {
   const buf = readFileSync(file);
-  const normName = file.replace(__dirname, "").slice(1);
+  const normName = (name) => {
+    name = name.replace(__dirname, "");
+    return (name.startsWith("/") && name.slice(1)) || name;
+  };
   let print = "";
-  print += dim(normName) + " - ";
+  print += dim(normName(file)) + " - ";
   print += bullet(prettyBytes(Buffer.byteLength(buf))) + " ";
   print += bullet(prettyBytes(gzip(buf))) + dim("/gz ");
   print += bullet(prettyBytes(brotli(buf))) + dim("/br ");
@@ -44,4 +50,8 @@ async function main() {
   console.log("\n" + indent(print) + "\n");
 }
 
-main();
+if (require.main === module) {
+  cli();
+}
+
+module.exports = lite;
