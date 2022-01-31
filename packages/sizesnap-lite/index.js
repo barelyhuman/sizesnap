@@ -4,6 +4,7 @@ const { resolve } = require("path");
 
 const bullet = (msg) => `\u001b[1m${msg}\u001b[0m`;
 const dim = (msg) => `\u001b[2m${msg}\u001b[0m`;
+const danger = (msg) => bullet(`\u001b[31m${msg}\u001b[0m`);
 
 function gzip(buffer) {
   return zlib.gzipSync(buffer, { level: 9 }).length;
@@ -25,14 +26,15 @@ const prettyBytes = (bytes) => {
 async function cli() {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    throw new Error("Provide a file for sizesnap to size");
+    return console.error(danger("Provide a file for sizesnap to size"));
   }
 
   if (args.length > 1) {
-    throw new Error("Invalid args, only one argument accepted");
+    return console.error(danger("Invalid args, only one argument accepted"));
   }
 
-  lite(resolve(args[0]));
+  const sizeString = await lite(resolve(args[0]));
+  console.log("\n" + indent(sizeString) + "\n");
 }
 
 async function lite(file) {
@@ -47,7 +49,7 @@ async function lite(file) {
   print += bullet(prettyBytes(gzip(buf))) + dim("/gz ");
   print += bullet(prettyBytes(brotli(buf))) + dim("/br ");
 
-  console.log("\n" + indent(print) + "\n");
+  return print;
 }
 
 if (require.main === module) {
