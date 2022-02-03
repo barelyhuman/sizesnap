@@ -11,6 +11,12 @@
 
 There's also a webversion, which serves the purpose of quickly checking a package's contents and their sizes. You can visit it as [https://sizesnap.reaper.im](https://sizesnap.reaper.im)
 
+## Lighter CLI
+
+There's also a subpackage which is **400B** if you'd like to use that for a CLI or writing your own programmatic API 
+You can read about it on it's own readme [packages/sizesnap-lite](packages/sizesnap-lite)
+
+
 ## Install
 
 ```sh
