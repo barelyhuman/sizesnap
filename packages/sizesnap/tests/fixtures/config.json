@@ -1,5 +1,5 @@
 {
   "sizesnap": {
-    "files": ["./dist/*.js", "./src/**/*.js"]
+    "files": ["./dist/*.js"]
   }
 }
