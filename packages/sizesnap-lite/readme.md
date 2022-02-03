@@ -20,6 +20,15 @@ sizesnap-lite index.js
 
 ```
 
+## API 
+same as above, it's a hyperfocused usecase lib so... 
+```js
+import lite from "sizesnap-lite"
+
+lite("package.json") // => will print the size to the stdout
+```
+
+
 ## License
 
 [MIT](/LICENSE)
