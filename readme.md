@@ -5,7 +5,7 @@
 - Tiny (15.3kB, 5.45kB gzip, 4.94kB brotli) , alternatives go up to 1MB
 - Single File (thanks to [@vercel/ncc](https://github.com/@vercel/ncc))
 - I don't have more points...
-- Pretty Printer
+- Pretty Printer (+ CLI Table, Markdown Table)
 
 ## Web version
 
@@ -13,9 +13,8 @@ There's also a webversion, which serves the purpose of quickly checking a packag
 
 ## Lighter CLI
 
-There's also a subpackage which is **400B** if you'd like to use that for a CLI or writing your own programmatic API 
+There's also a subpackage which is about **400B** if you'd like to use that for a CLI or writing your own programmatic API
 You can read about it on it's own readme [packages/sizesnap-lite](packages/sizesnap-lite)
-
 
 ## Install
 
@@ -56,7 +55,9 @@ Add the following in your `package.json`, `files` is an `[]` of file glob paths
 
 # or
 
+# `table` is deprecated , use `--table` instead
 > yarn size table
+> yarn size --table
 
 # output
 FILEPATH                SIZE    GZIP    BROTLI
@@ -69,11 +70,18 @@ src/lib/files.js        372B    223B    186B
 src/lib/loggers.js      357B    216B    186B
 src/lib/zipped.js       444B    207B    186B
 
+> yarn size --table --markdown
+
+# output
+|FILEPATH     |SIZE   |GZIP  |BROTLI|
+|-------------|-------|------|------|
+|dist/index.js|15.76KB|5.78KB|5.26KB|
+
 ```
 
 ## API
 
-The package features a builder style API, you can get a fair understanding of using it from [src/index.js](src/index.js) file
+The package features a builder style API, you can get a fair understanding of using it from [src/index.js](packages/sizesnap/src/index.js) file
 
 ## License
 

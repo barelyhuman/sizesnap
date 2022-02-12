@@ -10,11 +10,11 @@
   "private": "true",
   "scripts": {
     "server:dev": "pnpm run dev --filter server",
-    "build": "pnpm run build -r"
+    "build": "pnpm run build -r",
+    "size": "pnpm run size -r --if-present"
   },
   "dependencies": {
     "brotli-size": "^4.0.0",
-    "bytes": "^3.1.1",
     "got": "^12.0.1",
     "picocolors": "^1.0.0",
     "tar": "^6.1.11",
