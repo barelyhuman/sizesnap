@@ -31,8 +31,8 @@ jobs:
         run: |
           cd base
           pnpm i
-          pnpm run build
-          pnpm run size -- --table --markdown > out.md | true
+          pnpm run build -r --filter sizesnap
+          pnpm run -r --filter sizesnap size -- -- --table --markdown > out.md
           OUT="$(cat out.md)"
           OUT="${OUT//'%'/'%25'}"
           OUT="${OUT//$'\n'/'%0A'}"
@@ -43,8 +43,8 @@ jobs:
         run: |
           cd changes
           pnpm i
-          pnpm run build
-          pnpm run size -- --table --markdown > out.md
+          pnpm run build -r --filter sizesnap
+          pnpm run -r --filter sizesnap size -- -- --table --markdown > out.md
           OUT="$(cat out.md)"
           OUT="${OUT//'%'/'%25'}"
           OUT="${OUT//$'\n'/'%0A'}"

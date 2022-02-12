@@ -17,8 +17,6 @@ function generate({
     warn("\nDeprecated, use `--table` instead\n");
   }
 
-  info("Reading Config");
-
   /**
    * - create a new instance using `new`
    * - read the default config (`package.json`)
@@ -26,7 +24,6 @@ function generate({
    * eg:
    *  sizeFiles(["some/file/path"])
    **/
-  const sizeSnap = new SizeSnap().readConfig().sizeFiles();
 
   if (args.indexOf("table") > -1 || args.indexOf("--table") > -1) {
     log = false;
@@ -36,6 +33,10 @@ function generate({
   if (args.indexOf("--markdown") > -1) {
     markdown = true;
   }
+
+  !markdown ? info("Reading Config") : null;
+
+  const sizeSnap = new SizeSnap().readConfig().sizeFiles();
 
   /**
    * Now create a snapshot from the files that've been read
@@ -81,7 +82,7 @@ function generate({
   if (write) {
     sizeSnap.writeSnapshot();
     sizeSnap.onDone(() => {
-      success(`Generated ${SNAPSHOT_FILE}`);
+      !markdown ? success(`Generated ${SNAPSHOT_FILE}`) : null;
     });
   }
 }
