@@ -10,7 +10,8 @@
   "private": "true",
   "scripts": {
     "server:dev": "pnpm run dev --filter server",
-    "build": "pnpm run build -r"
+    "build": "pnpm run build -r",
+    "size": "pnpm run -r size"
   },
   "dependencies": {
     "brotli-size": "^4.0.0",

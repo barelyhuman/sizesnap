@@ -1,0 +1,74 @@
+name: Sizer
+
+on:
+  pull_request:
+    branches: [dev]
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: PNPM
+        run: npm i -g pnpm
+
+      - name: Checkout
+        with:
+          ref: dev
+          path: base
+        uses: actions/checkout@v2
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: changes
+
+      - id: dev_state_size
+        run: |
+          cd base
+          pnpm i
+          pnpm run build
+          pnpm run size -- --table --markdown > out.md | true
+          OUT="$(cat out.md)"
+          OUT="${OUT//'%'/'%25'}"
+          OUT="${OUT//$'\n'/'%0A'}"
+          OUT="${OUT//$'\r'/'%0D'}"
+          echo "::set-output name=size::$OUT"
+
+      - id: current_state_size
+        run: |
+          cd changes
+          pnpm i
+          pnpm run build
+          pnpm run size -- --table --markdown > out.md
+          OUT="$(cat out.md)"
+          OUT="${OUT//'%'/'%25'}"
+          OUT="${OUT//$'\n'/'%0A'}"
+          OUT="${OUT//$'\r'/'%0D'}"
+          echo "::set-output name=size::$OUT"
+
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            const message = `
+            **Base**  
+
+            ${{ steps.dev_state_size.outputs.size }}
+
+
+            **PR**  
+
+            ${{ steps.current_state_size.outputs.size }}  
+
+            `;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            })
