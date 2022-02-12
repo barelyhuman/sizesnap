@@ -2,24 +2,42 @@
 
 const { SizeSnap } = require("./api");
 const { SNAPSHOT_FILE } = require("./constants");
-const { info, success } = require("../../../lib/loggers");
+const { info, success, warn } = require("../../../lib/loggers");
 
-function generate({ log = true, table = false, write = true } = {}) {
+function generate({
+  log = true,
+  table = false,
+  write = true,
+  markdown = false,
+} = {}) {
+  const args = process.argv.slice(2);
+
+  // deprecations
+  if (args.indexOf("table") > -1) {
+    warn("\nDeprecated, use `--table` instead\n");
+  }
+
   info("Reading Config");
 
   const sizeSnap = new SizeSnap().readConfig().sizeFiles();
 
-  const args = process.argv.slice(2);
-
-  if (args.indexOf("table") > -1) {
+  if (args.indexOf("table") > -1 || args.indexOf("--table") > -1) {
     log = false;
     table = true;
   }
 
+  if (args.indexOf("--markdown") > -1) {
+    markdown = true;
+  }
+
   sizeSnap.generateSnapshot({ log });
 
-  if (table) {
+  if (table && !markdown) {
     sizeSnap.tablePrint();
+  }
+
+  if (markdown && table) {
+    sizeSnap.markdownTablePrint();
   }
 
   if (write) {
