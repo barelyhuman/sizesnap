@@ -35,6 +35,7 @@ function SizeSnap() {
   that.writeSnapshot = writeSnapshot;
   that.onDone = onDone;
   that.tablePrint = tablePrint;
+  that.markdownTablePrint = markdownTablePrint;
 
   function readConfig(path = "package.json") {
     const pkgData =
@@ -155,6 +156,61 @@ function SizeSnap() {
           tableData(rpad(item.brotli, brotliSize), false, "yellow"),
         ];
         print += `${tData.join("\t")}\n`;
+      });
+
+      console.log("\n" + print + "\n");
+    });
+    return that;
+  }
+
+  function markdownTablePrint() {
+    waitForSnapshot(() => {
+      let fileNameSize = 0;
+      let gzipSize = 0;
+      let originalSize = 0;
+      let brotliSize = 0;
+      const items = [];
+
+      Object.keys(that.snapshot).forEach((fileKey) => {
+        const snapItem = that.snapshot[fileKey];
+        fileNameSize = Math.max(fileKey.length, fileNameSize);
+        gzipSize = Math.max(snapItem.gzip.length, gzipSize);
+        originalSize = Math.max(snapItem.size.length, originalSize);
+        brotliSize = Math.max(snapItem.brotli.length, brotliSize);
+        items.push({
+          path: fileKey,
+          gzip: snapItem.gzip,
+          size: snapItem.size,
+          brotli: snapItem.brotli,
+        });
+      });
+
+      let print = "";
+
+      const headers = [
+        rpad("filepath".toUpperCase(), fileNameSize),
+        rpad("size".toUpperCase(), originalSize),
+        rpad("gzip".toUpperCase(), gzipSize),
+        rpad("brotli".toUpperCase(), brotliSize),
+      ];
+
+      print += `${"|" + headers.map((item) => item + "|").join("")}\n`;
+
+      print += `${
+        "|" +
+        headers
+          .map((item) => item.replace(/.*/, "-".repeat(item.length) + "|"))
+          .join("")
+      }\n`;
+
+      items.forEach((item) => {
+        const tData = [
+          "|" + rpad(item.path, fileNameSize - 2) + "|",
+          rpad(item.size, originalSize - 2) + "|",
+          rpad(item.gzip, gzipSize - 2) + "|",
+          rpad(item.brotli, brotliSize - 2) + "|",
+        ];
+        print += `${tData.join("")}\n`;
       });
 
       console.log("\n" + print + "\n");
