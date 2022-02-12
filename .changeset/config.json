@@ -6,5 +6,5 @@
   "access": "restricted",
   "baseBranch": "dev",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["server"]
 }

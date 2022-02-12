@@ -1,6 +1,6 @@
 {
   "name": "sizesnap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple file size snapshot generator",
   "keywords": [
     "cli",
@@ -26,6 +26,9 @@
     "prepublishOnly": "npm run build",
     "size": "./dist/index.js",
     "test": "uvu -i fixtures"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.1",
