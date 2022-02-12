@@ -1,11 +1,11 @@
-const { findFiles } = require("../../../lib/files");
 const { readFileSync, existsSync, writeFile } = require("fs");
 const { join } = require("path");
+const pc = require("picocolors");
+const { findFiles } = require("../../../lib/files");
 const { info } = require("../../../lib/loggers");
 const { pretty } = require("../../../lib/bytes");
 const { brotli, gzip } = require("../../../lib/zipped");
 const { SNAPSHOT_FILE } = require("./constants");
-const pc = require("picocolors");
 
 const _promiseStates = {
   pending: 0,
@@ -14,10 +14,9 @@ const _promiseStates = {
 };
 
 const padder = " ";
-const tableHeader = (m) => pc.bold(pc.dim(m));
-const tableData = (m, italic, color) =>
-  pc[color || "white"](italic ? pc.italic(m) : m);
-const rpad = (str, max) => str + padder.repeat(Math.max(max - str.length, 0));
+
+const rpad = (string_, max) =>
+  string_ + padder.repeat(Math.max(max - string_.length, 0));
 
 function SizeSnap() {
   const that = this;
@@ -26,16 +25,24 @@ function SizeSnap() {
   that.fileGetter = _promiseStates.pending;
   that.snapshot = {};
   that.generated = false;
-  this.shouldPrettyPrint = false;
+  that.shouldPrettyPrint = false;
 
+  // Function bindings
   that.readConfig = readConfig;
   that.generateSnapshot = generateSnapshot;
   that.sizeFiles = sizeFiles;
   that.toJSON = toJSON;
   that.writeSnapshot = writeSnapshot;
   that.onDone = onDone;
+  that.value = getValue;
   that.tablePrint = tablePrint;
   that.markdownTablePrint = markdownTablePrint;
+
+  // Private keys
+  that._filenameMaxTextLength = 0;
+  that._gzipMaxTextLength = 0;
+  that._originalMaxTextLength = 0;
+  that._brotliMaxTextLength = 0;
 
   function readConfig(path = "package.json") {
     const pkgData =
@@ -51,10 +58,11 @@ function SizeSnap() {
     if (filePattern.length === 0 && that.config && that.config.files) {
       filePattern = that.config.files;
     }
+
     findFiles(filePattern)
       .then((paths) => {
         that.fileGetter = _promiseStates.done;
-        that.filePaths = paths.slice();
+        that.filePaths = [...paths];
       })
       .catch((err) => {
         that.fileGetterDone = _promiseStates.failed;
@@ -72,12 +80,14 @@ function SizeSnap() {
       if (that.fileGetter !== _promiseStates.pending) {
         clearInterval(id);
       }
+
       if (that.fileGetter === _promiseStates.done) {
         toExec();
       }
     }, 0);
     return that;
   }
+
   function waitForSnapshot(toExec) {
     const id = setInterval(() => {
       if (that.generated) {
@@ -90,7 +100,7 @@ function SizeSnap() {
 
   function _generateSnapshot({ log = false } = {}) {
     const snapshot = {};
-    (that.filePaths || []).forEach((file) => {
+    for (const file of that.filePaths || []) {
       const buf = readFileSync(file);
       log &&
         info(`Sizing ${file} - ${pc.yellow(pretty(Buffer.byteLength(buf)))}`);
@@ -99,7 +109,8 @@ function SizeSnap() {
         brotli: pretty(brotli(buf)),
         gzip: pretty(gzip(buf)),
       };
-    });
+    }
+
     that.snapshot = snapshot;
     that.generated = true;
   }
@@ -114,106 +125,109 @@ function SizeSnap() {
     });
   }
 
-  function tablePrint() {
+  function _snapShotHeaders({ markdown = false } = { markdown: false }) {
+    const tableHeader = (m) => (markdown ? m : pc.bold(pc.dim(m)));
+
+    // Basically means this function was run already and the sizes already exist
+    // do not recalculate the size
+    if (
+      that._filenameMaxTextLength > 0 &&
+      that._gzipMaxTextLength > 0 &&
+      that._originalMaxTextLength > 0 &&
+      that._brotliMaxTextLength > 0
+    ) {
+      return;
+    }
+
+    // Find maximum text lengths for each header
+    for (const fileKey of Object.keys(that.snapshot)) {
+      const snapItem = that.snapshot[fileKey];
+      that._filenameMaxTextLength = Math.max(
+        fileKey.length,
+        that._filenameMaxTextLength
+      );
+      that._gzipMaxTextLength = Math.max(
+        snapItem.gzip.length,
+        that._gzipMaxTextLength
+      );
+      that._originalMaxTextLength = Math.max(
+        snapItem.size.length,
+        that._originalMaxTextLength
+      );
+      that._brotliMaxTextLength = Math.max(
+        snapItem.brotli.length,
+        that._brotliMaxTextLength
+      );
+    }
+
+    const headers = [
+      tableHeader(rpad("filepath".toUpperCase(), that._filenameMaxTextLength)),
+      tableHeader(rpad("size".toUpperCase(), that._originalMaxTextLength)),
+      tableHeader(rpad("gzip".toUpperCase(), that._gzipMaxTextLength)),
+      tableHeader(rpad("brotli".toUpperCase(), that._brotliMaxTextLength)),
+    ];
+
+    return headers;
+  }
+
+  function _snapShotBody({ markdown = false } = { markdown: false }) {
+    const tableData = (m, italic, color) =>
+      markdown ? m : pc[color || "white"](italic ? pc.italic(m) : m);
+
+    const rows = [];
+
+    for (const fileKey of Object.keys(that.snapshot)) {
+      const snapItem = that.snapshot[fileKey];
+      let print = [];
+
+      print.push(tableData(rpad(fileKey, that._filenameMaxTextLength), true));
+      print.push(
+        tableData(
+          rpad(snapItem.size, that._originalMaxTextLength),
+          false,
+          "yellow"
+        )
+      );
+      print.push(
+        tableData(rpad(snapItem.gzip, that._gzipMaxTextLength), false, "yellow")
+      );
+      print.push(
+        tableData(
+          rpad(snapItem.brotli, that._brotliMaxTextLength),
+          false,
+          "yellow"
+        )
+      );
+      let delimeter = markdown ? "|" : "\t";
+
+      rows.push(print.join(delimeter));
+    }
+
+    return rows;
+  }
+
+  function tablePrint(printer = console.log) {
     that.shouldPrettyPrint = true;
     waitForSnapshot(() => {
-      let fileNameSize = 0;
-      let gzipSize = 0;
-      let originalSize = 0;
-      let brotliSize = 0;
-      const items = [];
-
-      Object.keys(that.snapshot).forEach((fileKey) => {
-        const snapItem = that.snapshot[fileKey];
-        fileNameSize = Math.max(fileKey.length, fileNameSize);
-        gzipSize = Math.max(snapItem.gzip.length, gzipSize);
-        originalSize = Math.max(snapItem.size.length, originalSize);
-        brotliSize = Math.max(snapItem.brotli.length, brotliSize);
-        items.push({
-          path: fileKey,
-          gzip: snapItem.gzip,
-          size: snapItem.size,
-          brotli: snapItem.brotli,
-        });
-      });
-
+      const headers = _snapShotHeaders();
       let print = "";
-
-      const headers = [
-        tableHeader(rpad("filepath".toUpperCase(), fileNameSize)),
-        tableHeader(rpad("size".toUpperCase(), originalSize)),
-        tableHeader(rpad("gzip".toUpperCase(), gzipSize)),
-        tableHeader(rpad("brotli".toUpperCase(), brotliSize)),
-      ];
-
       print += `${headers.join("\t")}\n`;
-
-      items.forEach((item) => {
-        const tData = [
-          tableData(rpad(item.path, fileNameSize), true),
-          tableData(rpad(item.size, originalSize), false, "yellow"),
-          tableData(rpad(item.gzip, gzipSize), false, "yellow"),
-          tableData(rpad(item.brotli, brotliSize), false, "yellow"),
-        ];
-        print += `${tData.join("\t")}\n`;
-      });
-
-      console.log("\n" + print + "\n");
+      print += _snapShotBody();
+      printer("\n" + print + "\n");
     });
     return that;
   }
 
-  function markdownTablePrint() {
+  function markdownTablePrint(printer = console.log) {
     waitForSnapshot(() => {
-      let fileNameSize = 0;
-      let gzipSize = 0;
-      let originalSize = 0;
-      let brotliSize = 0;
-      const items = [];
-
-      Object.keys(that.snapshot).forEach((fileKey) => {
-        const snapItem = that.snapshot[fileKey];
-        fileNameSize = Math.max(fileKey.length, fileNameSize);
-        gzipSize = Math.max(snapItem.gzip.length, gzipSize);
-        originalSize = Math.max(snapItem.size.length, originalSize);
-        brotliSize = Math.max(snapItem.brotli.length, brotliSize);
-        items.push({
-          path: fileKey,
-          gzip: snapItem.gzip,
-          size: snapItem.size,
-          brotli: snapItem.brotli,
-        });
-      });
-
+      const headers = _snapShotHeaders({ markdown: true });
       let print = "";
-
-      const headers = [
-        rpad("filepath".toUpperCase(), fileNameSize),
-        rpad("size".toUpperCase(), originalSize),
-        rpad("gzip".toUpperCase(), gzipSize),
-        rpad("brotli".toUpperCase(), brotliSize),
-      ];
-
-      print += `${"|" + headers.map((item) => item + "|").join("")}\n`;
-
-      print += `${
-        "|" +
-        headers
-          .map((item) => item.replace(/.*/, "-".repeat(item.length) + "|"))
-          .join("")
-      }\n`;
-
-      items.forEach((item) => {
-        const tData = [
-          "|" + rpad(item.path, fileNameSize - 2) + "|",
-          rpad(item.size, originalSize - 2) + "|",
-          rpad(item.gzip, gzipSize - 2) + "|",
-          rpad(item.brotli, brotliSize - 2) + "|",
-        ];
-        print += `${tData.join("")}\n`;
-      });
-
-      console.log("\n" + print + "\n");
+      print += `|${headers.join("|")}|\n`;
+      print += `|${headers
+        .map((x) => x.replace(/.*/, "-".repeat(x.length)))
+        .join("|")}|\n`;
+      print += "|" + _snapShotBody({ markdown: true }) + "|";
+      printer("\n" + print + "\n");
     });
     return that;
   }
@@ -224,6 +238,14 @@ function SizeSnap() {
 
   function toJSON() {
     return that.snapshot;
+  }
+
+  function getValue() {
+    return new Promise((resolve) => {
+      waitForSnapshot(() => {
+        resolve(that.snapshot);
+      });
+    });
   }
 }
 
