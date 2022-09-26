@@ -24,7 +24,7 @@ export default function Footer() {
           </Text>
         </Box>
         <Text margin-0 className="text-dim lowercase" align="center">
-          made for fun by <a href="https://reaper.im">reaper.im</a>
+          made for fun by <a href="https://reaper.is">reaper.is</a>
         </Text>
       </footer>
     </>
