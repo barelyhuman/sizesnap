@@ -2,6 +2,9 @@
   "name": "sizesnap",
   "version": "0.2.0",
   "description": "Simple file size snapshot generator",
+  "publishConfig": {
+    "access":"public"
+  },
   "keywords": [
     "cli",
     "bundle",
