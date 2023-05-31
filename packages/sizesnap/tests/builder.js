@@ -8,7 +8,7 @@ const { spawnSync } = require("child_process");
 const bin = "./dist/index.js";
 const rootDir = join(__dirname, "..");
 
-const fixtures = join(__dirname, "fixtures");
+const fixtures = join(__dirname, "helpers");
 const rejson = (j) => JSON.stringify(JSON.parse(j));
 const normalize = (c) => {
   if (typeof c === "object") {

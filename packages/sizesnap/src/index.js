@@ -13,7 +13,7 @@ function generate({
   const args = process.argv.slice(2);
 
   // deprecations
-  if (args.indexOf("table") > -1) {
+  if (args.indexOf("table") > -1 && args.indexOf("--table")==-1) {
     warn("\nDeprecated, use `--table` instead\n");
   }
 
@@ -80,10 +80,12 @@ function generate({
    * writeSnapshot("path/to/snapshot/file.json")
    */
   if (write) {
-    sizeSnap.writeSnapshot();
-    sizeSnap.onDone(() => {
-      !markdown ? success(`Generated ${SNAPSHOT_FILE}`) : null;
-    });
+    sizeSnap.writeSnapshot()
+    .then(()=>{
+        !markdown ? success(`Generated ${SNAPSHOT_FILE}`) : null;
+    })
+
+    
   }
 }
 

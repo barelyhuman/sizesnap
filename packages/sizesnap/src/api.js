@@ -7,12 +7,6 @@ const { pretty } = require("../../../lib/bytes");
 const { brotli, gzip } = require("../../../lib/zipped");
 const { SNAPSHOT_FILE } = require("./constants");
 
-const _promiseStates = {
-  pending: 0,
-  done: 1,
-  failed: 2,
-};
-
 const padder = " ";
 
 const rpad = (string_, max) =>
@@ -20,11 +14,10 @@ const rpad = (string_, max) =>
 
 function SizeSnap() {
   const that = this;
+
   that.config = {};
   that.filePaths = [];
-  that.fileGetter = _promiseStates.pending;
   that.snapshot = {};
-  that.generated = false;
   that.shouldPrettyPrint = false;
 
   // Function bindings
@@ -34,15 +27,63 @@ function SizeSnap() {
   that.toJSON = toJSON;
   that.writeSnapshot = writeSnapshot;
   that.onDone = onDone;
+  /**
+   * @deprecated , `value` is no longer required and
+   * the entire builder can be simply just awaited instead.
+   *
+   * eg:
+   * const sizeBuilder =  new SizeSnap().readConfig().sizeFiles()
+   * const snapshot = await sizeBuilder
+   */
   that.value = getValue;
   that.tablePrint = tablePrint;
   that.markdownTablePrint = markdownTablePrint;
+  that.then = then;
+  that.catch = catchFn;
 
   // Private keys
   that._filenameMaxTextLength = 0;
   that._gzipMaxTextLength = 0;
   that._originalMaxTextLength = 0;
   that._brotliMaxTextLength = 0;
+
+  // Event Helpers
+  that.events = {
+    q: [],
+  };
+  that.events.keys = {
+    FILE_GET: "sizesnap:file:get",
+    SNAPSHOT_DONE: "sizesnap:snapshot:done",
+  };
+  that.events.listeners = new Map();
+  that.events.flush = function flush() {
+    let evt;
+    while ((evt = that.events.q.shift())) {
+      (that.events.listeners.get(evt.name) || []).forEach((evtHandler) => {
+        evtHandler(evt.data);
+      });
+    }
+  };
+  that.events.listen = function listen(eventKey, handler) {
+    const listeners = that.events.listeners.get(eventKey) || [];
+    listeners.push(handler);
+    that.events.listeners.set(eventKey, listeners);
+    return () => {
+      const _listeners = that.events.listeners
+        .get(eventKey)
+        .filter((x) => x !== handler);
+      that.events.listeners.set(eventKey, _listeners);
+    };
+  };
+  that.events.emit = function emit(name, data) {
+    that.events.q.push({
+      name,
+      data,
+    });
+    return that;
+  };
+
+  Object.freeze(that.events);
 
   function readConfig(path = "package.json") {
     const pkgData =
@@ -61,40 +102,25 @@ function SizeSnap() {
 
     findFiles(filePattern)
       .then((paths) => {
-        that.fileGetter = _promiseStates.done;
         that.filePaths = [...paths];
+        that.events.emit(that.events.keys.FILE_GET, {
+          files: [...paths],
+        });
+        that.events.flush();
       })
       .catch((err) => {
-        that.fileGetterDone = _promiseStates.failed;
+        throw new Error(err);
       });
+
     return that;
   }
 
   function generateSnapshot() {
     const args = arguments;
-    return waitForFileReader(() => _generateSnapshot(...args));
-  }
-
-  function waitForFileReader(toExec) {
-    const id = setInterval(() => {
-      if (that.fileGetter !== _promiseStates.pending) {
-        clearInterval(id);
-      }
-
-      if (that.fileGetter === _promiseStates.done) {
-        toExec();
-      }
-    }, 0);
-    return that;
-  }
-
-  function waitForSnapshot(toExec) {
-    const id = setInterval(() => {
-      if (that.generated) {
-        clearInterval(id);
-        toExec();
-      }
+    that.events.listen(that.events.keys.FILE_GET, () => {
+      _generateSnapshot(...args);
     });
+
     return that;
   }
 
@@ -111,18 +137,19 @@ function SizeSnap() {
       };
     }
 
+    that.events.emit(that.events.keys.SNAPSHOT_DONE, {});
     that.snapshot = snapshot;
-    that.generated = true;
   }
 
   function writeSnapshot(file = SNAPSHOT_FILE) {
-    return waitForFileReader(() => {
+    that.events.listen(that.events.keys.SNAPSHOT_DONE, () => {
       writeFile(file, JSON.stringify(that.snapshot, null, 2), (err) => {
         if (err) {
           throw err;
         }
       });
     });
+    return that;
   }
 
   function _snapShotHeaders({ markdown = false } = { markdown: false }) {
@@ -208,7 +235,7 @@ function SizeSnap() {
 
   function tablePrint(printer = console.log) {
     that.shouldPrettyPrint = true;
-    waitForSnapshot(() => {
+    that.events.listen(that.events.keys.SNAPSHOT_DONE, () => {
       const headers = _snapShotHeaders();
       let print = "";
       print += `${headers.join("\t")}\n`;
@@ -219,7 +246,7 @@ function SizeSnap() {
   }
 
   function markdownTablePrint(printer = console.log) {
-    waitForSnapshot(() => {
+    that.events.listen(that.events.keys.SNAPSHOT_DONE, () => {
       const headers = _snapShotHeaders({ markdown: true });
       let print = "";
       print += `|${headers.join("|")}|\n`;
@@ -233,7 +260,9 @@ function SizeSnap() {
   }
 
   function onDone(fn) {
-    return waitForSnapshot(fn);
+    that.events.listen(that.events.keys.SNAPSHOT_DONE, () => {
+      fn();
+    });
   }
 
   function toJSON() {
@@ -242,9 +271,21 @@ function SizeSnap() {
 
   function getValue() {
     return new Promise((resolve) => {
-      waitForSnapshot(() => {
+      that.events.listen(this.events.keys.SNAPSHOT_DONE, () => {
         resolve(that.snapshot);
       });
+    });
+  }
+
+  function then(fn) {
+    that.events.listen(this.events.keys.SNAPSHOT_DONE, () => {
+      fn(that.snapshot);
+    });
+  }
+
+  function catchFn(fn) {
+    that.events.listen(this.events.keys.SNAPSHOT_DONE, () => {
+      fn(that.error);
     });
   }
 }
