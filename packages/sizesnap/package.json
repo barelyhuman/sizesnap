@@ -1,9 +1,9 @@
 {
   "name": "sizesnap",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simple file size snapshot generator",
   "publishConfig": {
-    "access":"public"
+    "access": "public"
   },
   "keywords": [
     "cli",
@@ -23,17 +23,24 @@
   ],
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "ncc build -m src/index.js",
+    "build": "rollup -c",
     "postbuild": "chmod +x dist/index.js",
-    "dev": "npm run build -- -w",
+    "dev": "rollup -c -w",
     "prepublishOnly": "npm run build",
     "size": "./dist/index.js",
     "test": "uvu -i fixtures"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.33.1",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "brotli-size": "^4.0.0",
+    "esbuild": "^0.17.19",
     "picocolors": "^1.0.0",
+    "rollup": "^3.23.0",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "rollup-plugin-preserve-shebang": "^1.0.1",
+    "rollup-plugin-size": "^0.3.1",
     "tiny-glob": "^0.2.9",
     "uvu": "^0.5.3"
   },

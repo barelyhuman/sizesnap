@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
-const { SizeSnap } = require("./api");
-const { SNAPSHOT_FILE } = require("./constants");
-const { info, success, warn } = require("../../../lib/loggers");
+export { SizeSnap } from './api';
 
-function generate({
+import { SizeSnap } from './api';
+import { SNAPSHOT_FILE } from './constants';
+import { info, success, warn } from '../../../lib/loggers';
+
+export function generate({
   log = true,
   table = false,
   write = true,
@@ -13,8 +15,8 @@ function generate({
   const args = process.argv.slice(2);
 
   // deprecations
-  if (args.indexOf("table") > -1 && args.indexOf("--table")==-1) {
-    warn("\nDeprecated, use `--table` instead\n");
+  if (args.indexOf('table') > -1 && args.indexOf('--table') == -1) {
+    warn('\nDeprecated, use `--table` instead\n');
   }
 
   /**
@@ -25,16 +27,16 @@ function generate({
    *  sizeFiles(["some/file/path"])
    **/
 
-  if (args.indexOf("table") > -1 || args.indexOf("--table") > -1) {
+  if (args.indexOf('table') > -1 || args.indexOf('--table') > -1) {
     log = false;
     table = true;
   }
 
-  if (args.indexOf("--markdown") > -1) {
+  if (args.indexOf('--markdown') > -1) {
     markdown = true;
   }
 
-  !markdown ? info("Reading Config") : null;
+  !markdown ? info('Reading Config') : null;
 
   const sizeSnap = new SizeSnap().readConfig().sizeFiles();
 
@@ -80,17 +82,11 @@ function generate({
    * writeSnapshot("path/to/snapshot/file.json")
    */
   if (write) {
-    sizeSnap.writeSnapshot()
-    .then(()=>{
-        !markdown ? success(`Generated ${SNAPSHOT_FILE}`) : null;
-    })
-
-    
+    sizeSnap.writeSnapshot().then(() => {
+      !markdown ? success(`Generated ${SNAPSHOT_FILE}`) : null;
+    });
   }
 }
-
-exports.SizeSnap = SizeSnap;
-exports.generate = generate;
 
 if (require.main === module) {
   generate();
