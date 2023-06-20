@@ -9,7 +9,7 @@
 
 ## Web version
 
-There's also a webversion, which serves the purpose of quickly checking a package's contents and their sizes. You can visit it as [https://sizesnap.reaper.im](https://sizesnap.reaper.im)
+There's also a webversion, which serves the purpose of quickly checking a package's contents and their sizes. You can view it on [sizesnap.barelyhuman.dev](http://sizesnap.barelyhuman.dev)
 
 ## Lighter CLI
 
