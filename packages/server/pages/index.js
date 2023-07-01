@@ -83,7 +83,7 @@ yarn add sizesnap`}
         <Text>
           No sponsors yet. If you do like the project and would like to help
           out, consider sponsoring the project by visiting
-          <a href="https://barelyhuman.dev/donate"> the donate page</a>
+          <a href="https://github.com/barelyhuman/sponsors"> the donate page</a>
         </Text>
       </section>
     </>
